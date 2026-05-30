@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://capacium.xyz/spec/v1.0/schema.json",
+  "title": "capability.yaml v1.0",
+  "description": "JSON Schema for Capacium capability.yaml v1.0 specification",
+  "type": "object",
+  "required": ["name", "version", "kind", "description"],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Globally unique capability identifier in owner/name format",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]*/[a-z0-9][a-z0-9-]*$",
+      "maxLength": 128
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version (semver 2.0.0)",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "kind": {
+      "type": "string",
+      "description": "Capability kind — determines what fields are valid",
+      "enum": [
+        "skill",
+        "mcp-server",
+        "bundle",
+        "tool",
+        "prompt",
+        "template",
+        "workflow",
+        "connector-pack",
+        "operator",
+        "checkpoint",
+        "policy",
+        "resource"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "description": "One-line human-readable description",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "canonical_source_url": {
+      "type": "string",
+      "description": "URL of the source repository",
+      "format": "uri"
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier (e.g. MIT, Apache-2.0)"
+    },
+    "tags": {
+      "type": "array",
+      "description": "Searchable tags (lowercase, hyphenated)",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      },
+      "maxItems": 20
+    },
+    "category": {
+      "type": "string",
+      "description": "Primary category"
+    },
+    "frameworks": {
+      "type": "array",
+      "description": "Target AI agent frameworks",
+      "items": {
+        "type": "string"
+      }
+    },
+    "runtimes": {
+      "type": "object",
+      "description": "Runtime version requirements",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Dependencies on other capabilities",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "kind": { "type": "string" }
+        }
+      }
+    },
+    "long_description": {
+      "type": "string",
+      "description": "Long-form description in Markdown"
+    },
+    "description_i18n": {
+      "type": "object",
+      "description": "Internationalized descriptions keyed by ISO 639-1 language code",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mcp_meta": {
+      "type": "object",
+      "description": "MCP server metadata (required for kind: mcp-server)",
+      "properties": {
+        "transport": {
+          "type": "string",
+          "enum": ["stdio", "http", "sse"]
+        },
+        "command": { "type": "string" },
+        "args": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "required": { "type": "boolean" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "input_schema": { "type": "object" }
+            }
+          }
+        }
+      }
+    },
+    "bundle_meta": {
+      "type": "object",
+      "description": "Bundle metadata (required for kind: bundle)",
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "version": { "type": "string" }
+            }
+          }
+        },
+        "install_all": { "type": "boolean" }
+      }
+    },
+    "operator_meta": {
+      "type": "object",
+      "description": "Operator metadata (required for kind: operator)",
+      "properties": {
+        "role": { "type": "string" },
+        "sla_hours": { "type": "number" },
+        "approval_modes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "notification": { "type": "string" },
+        "escalation_to": { "type": "string" }
+      }
+    },
+    "checkpoint_meta": {
+      "type": "object",
+      "description": "Checkpoint metadata (required for kind: checkpoint)",
+      "properties": {
+        "automated_check": { "type": "string" },
+        "escalation_to": { "type": "string" },
+        "timeout_hours": { "type": "number" },
+        "fallback": {
+          "type": "string",
+          "enum": ["approve", "reject", "escalate"]
+        }
+      }
+    },
+    "policy_meta": {
+      "type": "object",
+      "description": "Policy metadata (required for kind: policy)",
+      "properties": {
+        "minimum_trust_state": {
+          "type": "string",
+          "enum": ["discovered", "audited", "verified", "signed"]
+        },
+        "allowed_publishers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "blocked_kinds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "require_audit_log": { "type": "boolean" },
+        "max_capability_age_days": { "type": "integer" }
+      }
+    },
+    "resource_meta": {
+      "type": "object",
+      "description": "Resource metadata (required for kind: resource)",
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "description": "Type of resource content",
+          "enum": ["prompt-library", "dataset", "config-template", "model-weights", "tool-index", "embedding"]
+        },
+        "resource_format": {
+          "type": "string",
+          "description": "Format of resource data",
+          "enum": ["yaml", "json", "csv", "parquet", "binary", "directory"]
+        },
+        "size_hint": {
+          "type": "string",
+          "description": "Approximate size category",
+          "enum": ["small", "medium", "large"]
+        },
+        "access": {
+          "type": "object",
+          "description": "How to access the resource content",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": ["file", "api", "git-submodule", "registry"]
+            },
+            "path": {
+              "type": "string",
+              "description": "Relative path within the repository"
+            }
+          }
+        },
+        "compatibility": {
+          "type": "object",
+          "description": "Framework and version compatibility",
+          "properties": {
+            "frameworks": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "min_version": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "triggers": {
+      "type": "array",
+      "description": "Event triggers that activate the capability",
+      "items": {
+        "type": "object",
+        "required": ["event", "action"],
+        "properties": {
+          "event": {
+            "type": "string",
+            "enum": ["file-changed", "schedule", "webhook", "manual", "on-install", "on-update"],
+            "description": "Event type that fires the trigger"
+          },
+          "action": {
+            "type": "string",
+            "description": "Action to execute when triggered"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Optional glob/regex pattern for event filtering"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "signature": {
+      "type": "object",
+      "description": "Ed25519 signature (set by Exchange, not publishers)",
+      "properties": {
+        "public_key": { "type": "string" },
+        "value": { "type": "string" },
+        "signed_by": { "type": "string" },
+        "signed_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "kind": { "const": "mcp-server" } },
+        "required": ["kind"]
+      },
+      "then": {
+        "properties": {
+          "mcp_meta": {
+            "type": "object",
+            "description": "mcp_meta is strongly recommended for kind: mcp-server"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "kind": { "const": "resource" } },
+        "required": ["kind"]
+      },
+      "then": {
+        "properties": {
+          "resource_meta": {
+            "type": "object",
+            "description": "resource_meta is strongly recommended for kind: resource"
+          }
+        }
+      }
+    }
+  ]
+}

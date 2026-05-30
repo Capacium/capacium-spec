@@ -1,0 +1,48 @@
+# capability.yaml v1.0 — mcp-server example
+# Schema: https://capacium.xyz/spec/v1.0/schema.json
+
+name: typelicious/filesystem-mcp
+version: 2.0.1
+kind: mcp-server
+description: "MCP server exposing filesystem read/write tools via stdio."
+
+canonical_source_url: https://github.com/typelicious/filesystem-mcp
+license: MIT
+tags:
+  - filesystem
+  - file-management
+  - mcp
+
+frameworks:
+  - claude-code
+  - cursor
+
+runtimes:
+  node: ">=20"
+
+mcp_meta:
+  transport: stdio
+  command: node
+  args: ["dist/server.js"]
+  env:
+    - name: ALLOWED_DIRS
+      required: false
+      description: "Comma-separated list of directories the server may access"
+  tools:
+    - name: read_file
+      description: "Read the contents of a file at the given path"
+      input_schema:
+        type: object
+        properties:
+          path: { type: string, description: "Absolute file path" }
+        required: [path]
+    - name: write_file
+      description: "Write content to a file"
+      input_schema:
+        type: object
+        properties:
+          path: { type: string }
+          content: { type: string }
+        required: [path, content]
+    - name: list_directory
+      description: "List files and directories in a given path"

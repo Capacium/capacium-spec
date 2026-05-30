@@ -1,0 +1,37 @@
+# capability.yaml v1.0 — resource example
+# Schema: https://capacium.xyz/spec/v1.0/schema.json
+
+name: capacium-team/example-prompt-library
+version: 1.0.0
+kind: resource
+description: "Curated prompt templates for code review automation"
+
+canonical_source_url: https://github.com/capacium-team/example-prompt-library
+license: MIT
+tags:
+  - prompts
+  - code-review
+  - templates
+
+category: developer-tools
+
+frameworks:
+  - claude-code
+  - cursor
+  - opencode
+
+# Resource-specific fields
+resource_type: prompt-library    # prompt-library | dataset | config-template | model-weights | tool-index | embedding
+resource_format: yaml            # yaml | json | csv | parquet | binary | directory
+size_hint: small                 # small (<1MB) | medium (1-100MB) | large (>100MB)
+
+access:
+  method: file                   # file | api | git-submodule | registry
+  path: "prompts/"               # relative path within repo
+
+compatibility:
+  frameworks:
+    - claude-code
+    - cursor
+    - opencode
+  min_version: "1.0.0"

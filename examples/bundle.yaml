@@ -1,0 +1,28 @@
+# capability.yaml v1.0 — bundle example
+# Schema: https://capacium.xyz/spec/v1.0/schema.json
+
+name: typelicious/document-suite
+version: 1.0.0
+kind: bundle
+description: "Complete document processing suite: PDF, Word, CSV, and image capabilities."
+
+canonical_source_url: https://github.com/typelicious/document-suite
+license: MIT
+tags:
+  - documents
+  - productivity
+  - bundle
+
+category: productivity
+
+bundle_meta:
+  install_all: true
+  capabilities:
+    - name: typelicious/pdf-extractor
+      version: ">=1.2.0"
+    - name: typelicious/word-converter
+      version: ">=1.0.0"
+    - name: typelicious/csv-analyzer
+      version: "~2.1.0"
+    - name: typelicious/image-ocr
+      version: ">=0.9.0"

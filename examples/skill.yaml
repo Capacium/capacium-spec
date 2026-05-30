@@ -1,0 +1,25 @@
+# capability.yaml v1.0 — skill example
+# Schema: https://capacium.xyz/spec/v1.0/schema.json
+
+name: typelicious/pdf-extractor
+version: 1.2.0
+kind: skill
+description: "Extract text, tables, and metadata from PDF files."
+
+canonical_source_url: https://github.com/typelicious/pdf-extractor
+license: MIT
+tags:
+  - pdf
+  - document-processing
+  - extraction
+
+category: developer-tools
+
+frameworks:
+  - claude-code
+  - cursor
+  - windsurf
+
+runtimes:
+  python: ">=3.10"
+  uv: ">=0.4.0"
