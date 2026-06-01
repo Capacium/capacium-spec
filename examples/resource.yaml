@@ -1,37 +1,85 @@
-# capability.yaml v1.0 — resource example
+# capability.yaml v1.0 — resource example (v2 agent persona)
 # Schema: https://capacium.xyz/spec/v1.0/schema.json
+#
+# kind: resource defines a deployable agent persona — an AI, human, or hybrid
+# operator with identity, behavior, skills, endpoints, and governance.
+# operator_type discriminates: ai | human | hybrid
 
-name: capacium-team/example-prompt-library
+name: capacium-team/code-review-agent
 version: 1.0.0
 kind: resource
-description: "Curated prompt templates for code review automation"
+description: "Automated TypeScript PR reviewer with security-aware code analysis"
 
-canonical_source_url: https://github.com/capacium-team/example-prompt-library
+operator_type: ai  # ai | human | hybrid
+
+# ── Layer 1: Identity ──
+display_name: "Code Review Agent"
+role: "Automated PR reviewer for TypeScript and React projects"
+owner: capacium-team
+
+canonical_source_url: https://github.com/capacium-team/code-review-agent
 license: MIT
 tags:
-  - prompts
   - code-review
-  - templates
-
-category: developer-tools
+  - typescript
+  - security
+  - agent
 
 frameworks:
   - claude-code
-  - cursor
+  - claude-desktop
   - opencode
+  - cursor
 
-# Resource-specific fields
-resource_type: prompt-library    # prompt-library | dataset | config-template | model-weights | tool-index | embedding
-resource_format: yaml            # yaml | json | csv | parquet | binary | directory
-size_hint: small                 # small (<1MB) | medium (1-100MB) | large (>100MB)
+# ── Layer 2: Persona ──
+persona:
+  description: "Thorough, constructive code reviewer that prioritizes security and correctness over style nitpicks"
+  tone: "professional, direct"
+  constraints:
+    - "Never suggest changes that break existing test suites"
+    - "Keep review comments to 10 items or fewer"
+    - "Flag all security-sensitive patterns (SQL injection, XSS, credential leaks)"
+    - "Distinguish between blocking and non-blocking feedback"
 
-access:
-  method: file                   # file | api | git-submodule | registry
-  path: "prompts/"               # relative path within repo
+# ── Layer 3: Behavior ──
+behavior:
+  instructions: "Analyze PR diff for correctness, style adherence, and security vulnerabilities. Produce a structured review with severity labels."
+  tools:
+    - github-api
+    - lint-runner
+    - dependency-scanner
+  skills:
+    - capacium/code-review-skill
+    - capacium/security-scanner
 
+# ── Layer 4: Endpoints ──
+endpoints:
+  a2a: "https://agents.capacium.xyz/code-review-agent/.well-known/agent-card.json"
+  mcp:
+    transport: stdio
+    command: uvx
+    args:
+      - capacium-code-review-agent
+  webhook: "https://agents.capacium.xyz/code-review-agent/webhook"
+
+# ── Layer 5: Governance ──
+governance:
+  trust_state: verified
+  approval:
+    required: true
+    approvers:
+      - security-team
+      - lead-developer
+    timeout_hours: 24
+  rate_limit: 100_per_hour
+  audit_log: true
+
+# ── Compatibility (cross-framework) ──
 compatibility:
   frameworks:
     - claude-code
-    - cursor
+    - claude-desktop
     - opencode
+    - cursor
   min_version: "1.0.0"
+  requires_trust_state: verified
