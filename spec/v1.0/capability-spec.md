@@ -5,7 +5,7 @@
 **Published:** 2026-05-11  
 **Repository:** https://github.com/Capacium/capacium-spec  
 **Schema:** https://capacium.xyz/spec/v1.0/schema.json  
-**Maintainer:** Capacium Project (typelicious@gmail.com)
+**Maintainer:** fusionAIze (fusionaize.com)
 
 ---
 
