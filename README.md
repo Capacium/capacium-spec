@@ -39,3 +39,9 @@ materials for an open, vendor-neutral home are prepared under
 ## Maintainer
 
 **fusionAIze** · [fusionaize.com](https://fusionaize.com)
+
+## Development
+
+Canonical repository: **self-hosted Forgejo** — `git.langevc.com/capacium/capacium-spec`
+(`git clone git@git.langevc.com:capacium/capacium-spec.git`). Develop against the Forgejo
+clone and open pull requests there. The GitHub copy is a read-only mirror.
